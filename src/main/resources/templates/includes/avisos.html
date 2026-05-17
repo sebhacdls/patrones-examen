@@ -27,11 +27,11 @@
 								<!-- Product name-->
 								<h5 class="fw-bolder" data-th-text="${a.nombre}">Fancy Product</h5>
 								<!-- Product price-->
-								<div data-th-if="${a.precioLista} == ${a.precioFinal}">																
+								<div data-th-if="${a.precioLista == a.precioFinal}">                                                                
 									<span data-th-text="${#numbers.formatCurrency(a.precioFinal)}">$40.00 - $80.00</span>
 								</div>
-								<div data-th-if="${a.precioLista} != ${a.precioFinal}">
-									<span><s data-th-text="${#numbers.formatCurrency(a.precioLista)}">$40.00</s></span>								
+								<div data-th-if="${a.precioLista != a.precioFinal}">
+									<span><s data-th-text="${#numbers.formatCurrency(a.precioLista)}">$40.00</s></span>                                
 									<span data-th-text="${#numbers.formatCurrency(a.precioFinal)}">$40.00 - $80.00</span>
 								</div>
 							</div>
