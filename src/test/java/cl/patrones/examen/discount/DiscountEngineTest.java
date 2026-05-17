@@ -34,4 +34,29 @@ class DiscountEngineTest {
         double finalPrice = discountEngine.calculateFinalPrice(p);
         assertEquals(5000.0, finalPrice, 0.001);
     }
+
+    @Test
+    void dayCategoryDiscountAppliesOnMondayForCompresor() {
+        Producto p = new Producto("Compresor Turbo", "img", "C-1", 1000.0);
+        cl.patrones.examen.discount.DiscountContext ctx = new cl.patrones.examen.discount.DiscountContext(false, java.time.DayOfWeek.MONDAY);
+        double finalPrice = discountEngine.calculateFinalPrice(p, ctx);
+        assertEquals(940.0, finalPrice, 0.001); // 6% off for compresor on Monday
+    }
+
+    @Test
+    void employeeGets5PercentButDoesNotStack() {
+        Producto p = new Producto("Taladro X", "img", "SKU-10P", 200.0);
+        // SKU has 10P (10% discount) and employee discount is 5% => 10% should win
+        cl.patrones.examen.discount.DiscountContext ctx = new cl.patrones.examen.discount.DiscountContext(true, java.time.DayOfWeek.WEDNESDAY);
+        double finalPrice = discountEngine.calculateFinalPrice(p, ctx);
+        assertEquals(180.0, finalPrice, 0.001);
+    }
+
+    @Test
+    void mondayCompresorWithSku10PUsesDayDiscount() {
+        Producto p = new Producto("Compresor Indura Huracan 1520 2HP 8 bar 50L", "img", "IND-1520-50L-10P", 320000.0);
+        cl.patrones.examen.discount.DiscountContext ctx = new cl.patrones.examen.discount.DiscountContext(false, java.time.DayOfWeek.MONDAY);
+        double finalPrice = discountEngine.calculateFinalPrice(p, ctx);
+        assertEquals(300800.0, finalPrice, 0.001); // 6% día lunes sobre compresor
+    }
 }

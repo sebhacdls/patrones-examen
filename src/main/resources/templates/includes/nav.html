@@ -17,7 +17,7 @@
 			class="dropdown-menu dropdown-submenu"
 		>
 			<li data-th-each="obj, s : ${submenu}" >
-				<a class="dropdown-item" data-th-href="@{${obj.enlace}}" href="#" data-th-text="${obj.texto}">
+				<a class="dropdown-item" href="#" th:href="@{${obj.enlace}}" data-th-text="${obj.texto}">
 					Subitem
 				</a>
 				<ul data-th-if="${obj.tieneHijos()}" data-th-replace="~{ ::submenu( ${obj.slug}, ${obj.hijos} ) }"></ul>
@@ -30,7 +30,7 @@
 		<div class="container px-4 px-lg-5">
 			
 			<!-- LOGO -->
-			<a class="navbar-brand" data-th-href="@{/}" href="#">Ferresin</a>
+			<a class="navbar-brand" href="#" th:href="@{/}">Ferresin</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
 				data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
 				aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -41,12 +41,12 @@
 					<li class="nav-item" data-th-classappend="${item.tieneHijos()}?'dropdown'" data-th-each="item, stat : ${menu}">						
 						<a data-th-if="${item.tieneHijos()}"
 							data-mdb-dropdown-init=""
-							class="nav-link dropdown-toggle"							
+							class="nav-link dropdown-toggle"						
 							role="button"
 							data-mdb-toggle="dropdown"
-							aria-expanded="false"							
+							aria-expanded="false"						
 							data-th-text="${item.texto}" 
-							data-th-href="@{${item.enlace}}">
+							href="#" th:href="@{${item.enlace}}">
 							Enlace
 						</a>
 						
@@ -55,7 +55,7 @@
 						<a data-th-if="${!item.tieneHijos()}"
 							class="nav-link"							 
 							data-th-text="${item.texto}" 
-							data-th-href="@{${item.enlace}}">
+							href="#" th:href="@{${item.enlace}}">
 							Enlace
 						</a>
 					</li>
@@ -81,10 +81,26 @@
 				<form class="d-flex">
 					<span class="d-flex align-items-center pe-3">
 						Bienvenido &nbsp;<span sec:authentication="name" style="text-transform: capitalize;"></span>
-						<a class="ms-2" data-th-href="@{/logout}" data-sec-authorize="isAuthenticated()">(Salir)</a>						
-						<a class="ms-2" data-th-href="@{/ingresar}" data-sec-authorize="!isAuthenticated()">(Ingresar)</a>
+						<a class="ms-2" href="#" th:href="@{/logout}" data-sec-authorize="isAuthenticated()">(Salir)</a>						
+						<a class="ms-2" href="#" th:href="@{/ingresar}" data-sec-authorize="!isAuthenticated()">(Ingresar)</a>
+						<!-- Admin toggle for employee flag in session -->
+					<a class="ms-2 btn btn-sm btn-outline-primary" href="#" th:href="@{/admin/toggle-employee}">
+						Empleado: <span th:text="${session.employee} == true ? 'ON' : 'OFF'">OFF</span>
+						</a>
+
+						<!-- Day selector -->
+						<div class="btn-group ms-2" role="group" aria-label="Días">
+						<a class="btn btn-sm btn-outline-secondary" href="#" th:href="@{/admin/set-day}" th:classappend="${session.discountDay} == null ? ' active' : ''">Hoy</a>
+						<a class="btn btn-sm btn-outline-secondary" href="#" th:href="@{/admin/set-day(day='MONDAY')}" th:classappend="${session.discountDay} == 'MONDAY' ? ' active' : ''">Lun</a>
+						<a class="btn btn-sm btn-outline-secondary" href="#" th:href="@{/admin/set-day(day='TUESDAY')}" th:classappend="${session.discountDay} == 'TUESDAY' ? ' active' : ''">Mar</a>
+						<a class="btn btn-sm btn-outline-secondary" href="#" th:href="@{/admin/set-day(day='WEDNESDAY')}" th:classappend="${session.discountDay} == 'WEDNESDAY' ? ' active' : ''">Mié</a>
+						<a class="btn btn-sm btn-outline-secondary" href="#" th:href="@{/admin/set-day(day='THURSDAY')}" th:classappend="${session.discountDay} == 'THURSDAY' ? ' active' : ''">Jue</a>
+						<a class="btn btn-sm btn-outline-secondary" href="#" th:href="@{/admin/set-day(day='FRIDAY')}" th:classappend="${session.discountDay} == 'FRIDAY' ? ' active' : ''">Vie</a>
+						<a class="btn btn-sm btn-outline-secondary" href="#" th:href="@{/admin/set-day(day='SATURDAY')}" th:classappend="${session.discountDay} == 'SATURDAY' ? ' active' : ''">Sáb</a>
+						<a class="btn btn-sm btn-outline-secondary" href="#" th:href="@{/admin/set-day(day='SUNDAY')}" th:classappend="${session.discountDay} == 'SUNDAY' ? ' active' : ''">Dom</a>
+						</div>
 					</span>
-					<a data-th-href="@{/carrito}" class="btn btn-outline-dark" type="submit">
+					<a href="#" th:href="@{/carrito}" class="btn btn-outline-dark" type="submit">
 						<i class="bi-cart-fill me-1"></i>
 						Carro
 						<span class="badge bg-dark text-white ms-1 rounded-pill">0</span>

@@ -11,13 +11,13 @@ import cl.patrones.examen.productos.model.Producto;
 public class FixedDiscountRule implements DiscountRule {
 
     @Override
-    public boolean supports(Producto producto) {
+    public boolean supports(Producto producto, cl.patrones.examen.discount.DiscountContext context) {
         String sku = producto.getSku();
         return sku != null && sku.contains("5F");
     }
 
     @Override
-    public double apply(Producto producto, double precioActual) {
+    public double apply(Producto producto, double precioActual, cl.patrones.examen.discount.DiscountContext context) {
         double result = precioActual - 5000.0; // ejemplo: 5.000 unidades
         return result < 0 ? 0 : result;
     }

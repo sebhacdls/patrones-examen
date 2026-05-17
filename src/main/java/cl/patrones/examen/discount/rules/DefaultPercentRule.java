@@ -11,13 +11,13 @@ import cl.patrones.examen.productos.model.Producto;
 public class DefaultPercentRule implements DiscountRule {
 
     @Override
-    public boolean supports(Producto producto) {
-        // Esta regla es considerada por el engine sólo si no hay otras aplicables.
+    public boolean supports(Producto producto, cl.patrones.examen.discount.DiscountContext context) {
+        // Always supports; engine will use it only if no higher-priority rule applies
         return true;
     }
 
     @Override
-    public double apply(Producto producto, double precioActual) {
+    public double apply(Producto producto, double precioActual, cl.patrones.examen.discount.DiscountContext context) {
         return precioActual * 0.90;
     }
 }

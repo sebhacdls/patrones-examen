@@ -11,13 +11,13 @@ import cl.patrones.examen.productos.model.Producto;
 public class PercentDiscountRule implements DiscountRule {
 
     @Override
-    public boolean supports(Producto producto) {
+    public boolean supports(Producto producto, cl.patrones.examen.discount.DiscountContext context) {
         String sku = producto.getSku();
         return sku != null && sku.matches(".*\\d+P.*");
     }
 
     @Override
-    public double apply(Producto producto, double precioActual) {
+    public double apply(Producto producto, double precioActual, cl.patrones.examen.discount.DiscountContext context) {
         String sku = producto.getSku();
         try {
             java.util.regex.Matcher m = java.util.regex.Pattern.compile("(\\d+)P").matcher(sku);

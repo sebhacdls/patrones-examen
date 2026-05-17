@@ -16,6 +16,11 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public List<Producto> getProductos() {
+        return getProductos(cl.patrones.examen.discount.DiscountContext.defaultContext(java.time.LocalDate.now().getDayOfWeek()));
+    }
+
+    @Override
+    public List<Producto> getProductos(cl.patrones.examen.discount.DiscountContext context) {
         List<Producto> productos = new ArrayList<>();
 
         Producto p1 = new Producto("Compresor 2HP 8 bar L", "compresor-2hp.jpg", "COMP-2HP-8L", 250000.0);
@@ -25,18 +30,26 @@ public class ProductoServiceImpl implements ProductoService {
         Producto p5 = new Producto("Taladro percutor 13MM 900W Erboc", "taladro-percutor-erboc.jpg", "TAL-ERB-13-900W", 60000.0);
         Producto p6 = new Producto("Taladro percutor 10MM 550W Black&decker", "taladro-percutor-bd.jpg", "TAL-BD-10-550W", 45000.0);
 
-        productos.add(applyDiscount(p1));
-        productos.add(applyDiscount(p2));
-        productos.add(applyDiscount(p3));
-        productos.add(applyDiscount(p4));
-        productos.add(applyDiscount(p5));
-        productos.add(applyDiscount(p6));
+        productos.add(applyDiscount(p1, context));
+        productos.add(applyDiscount(p2, context));
+        productos.add(applyDiscount(p3, context));
+        productos.add(applyDiscount(p4, context));
+        productos.add(applyDiscount(p5, context));
+        productos.add(applyDiscount(p6, context));
 
         return productos;
     }
 
     private Producto applyDiscount(Producto p) {
-        double precioConDescuento = discountEngine.calculateFinalPrice(p);
+        // Default context: non-employee, use system day
+        cl.patrones.examen.discount.DiscountContext ctx = cl.patrones.examen.discount.DiscountContext.defaultContext(java.time.LocalDate.now().getDayOfWeek());
+        double precioConDescuento = discountEngine.calculateFinalPrice(p, ctx);
+        p.setPrecioFinal(precioConDescuento);
+        return p;
+    }
+
+    private Producto applyDiscount(Producto p, cl.patrones.examen.discount.DiscountContext ctx) {
+        double precioConDescuento = discountEngine.calculateFinalPrice(p, ctx);
         p.setPrecioFinal(precioConDescuento);
         return p;
     }

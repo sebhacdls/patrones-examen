@@ -26,26 +26,40 @@ public class DiscountEngine {
     }
 
     public double calculateFinalPrice(Producto producto) {
+        return calculateFinalPrice(producto, DiscountContext.defaultContext(java.time.DayOfWeek.from(java.time.LocalDate.now())));
+    }
+
+    public double calculateFinalPrice(Producto producto, DiscountContext context) {
         double precio = producto.getPrecioLista();
-
-        // Buscar reglas específicas (excluyendo la default al final)
+        // Primero evaluar reglas específicas (excluyendo la DefaultPercentRule)
+        double bestSpecificPrice = precio;
+        int bestPriority = Integer.MIN_VALUE;
+        boolean anySpecific = false;
         for (DiscountRule r : rules) {
-            if (r.getClass().getSimpleName().equals("DefaultPercentRule")) {
-                continue;
-            }
-            if (r.supports(producto)) {
-                return r.apply(producto, precio);
+            if (r.getClass().getSimpleName().equals("DefaultPercentRule")) continue;
+            if (r.supports(producto, context)) {
+                double candidate = r.apply(producto, precio, context);
+                int priority = r.getPriority();
+                if (!anySpecific || priority > bestPriority || (priority == bestPriority && candidate < bestSpecificPrice)) {
+                    bestSpecificPrice = candidate;
+                    bestPriority = priority;
+                    anySpecific = true;
+                }
             }
         }
 
-        // Si no hubo regla específica, buscar la default y aplicarla
+        if (anySpecific) {
+            return bestSpecificPrice;
+        }
+
+        // Si no hay reglas específicas aplicables, aplicar la regla por defecto si existe
         for (DiscountRule r : rules) {
             if (r.getClass().getSimpleName().equals("DefaultPercentRule")) {
-                return r.apply(producto, precio);
+                return r.apply(producto, precio, context);
             }
         }
 
-        // Si no hay reglas registradas (caso extremo), retornar precio original
+        // Ninguna regla aplica: retornar precio original
         return precio;
     }
 }
